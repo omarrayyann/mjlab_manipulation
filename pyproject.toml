@@ -1,0 +1,52 @@
+[project]
+name = "mjlab_manipulation"
+version = "0.1.0"
+description = "Manipulation tasks for mjlab"
+readme = "README.md"
+requires-python = ">=3.10,<3.14"
+dependencies = [
+    "mjlab",
+]
+
+[project.optional-dependencies]
+cu128 = ["mjlab[cu128]", "torch>=2.7.0"]
+
+[build-system]
+requires = ["uv_build>=0.8.18,<0.9.0"]
+build-backend = "uv_build"
+
+[tool.uv]
+override-dependencies = ["mujoco>=3.8.0.dev0"]
+
+[tool.uv.sources]
+mjlab = { path = "../mjlab", editable = true }
+mujoco = { index = "mujoco" }
+mujoco-warp = { git = "https://github.com/google-deepmind/mujoco_warp", rev = "6f235d4" }
+torch = [
+  { index = "pytorch-cu128", extra = "cu128", marker = "sys_platform != 'darwin'" },
+]
+
+[[tool.uv.index]]
+name = "mujoco"
+url = "https://py.mujoco.org"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.14",
+]
+
+[tool.ruff]
+indent-width = 2
+src = ["mjlab_manipulation"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "B"]
+
+[project.entry-points."mjlab.tasks"]
+mjlab_manipulation = "mjlab_manipulation"
