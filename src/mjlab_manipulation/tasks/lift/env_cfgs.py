@@ -293,10 +293,10 @@ def ee_position_in_robot_base_frame(
 def lift_env_cfg(
   play: bool = False, robot_cfg_fn=get_droid_robot_cfg
 ) -> ManagerBasedRlEnvCfg:
-  from mjlab_manipulation.robots.tools import with_robotiq
+  from mjlab_manipulation.robots.tools import with_gripper
 
   cfg = make_lift_cube_env_cfg()
-  robot = with_robotiq(robot_cfg_fn())
+  robot = with_gripper(robot_cfg_fn())
 
   cfg.sim.mujoco.timestep = 0.002
   cfg.sim.mujoco.iterations = 20

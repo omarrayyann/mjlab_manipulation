@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import dataclasses
-from pathlib import Path
 
 import mujoco
 from mjlab.actuator import XmlActuatorCfg
@@ -9,10 +8,6 @@ from mjlab.actuator.actuator import TransmissionType
 from mjlab.utils.spec_config import CollisionCfg
 
 from mjlab_manipulation.robots import RobotCfg
-
-_ROBOTIQ_XML: Path = Path(__file__).parent / "_robotiq" / "2f85" / "2f85.xml"
-assert _ROBOTIQ_XML.exists()
-
 
 _GRIPPER_ACTUATOR = XmlActuatorCfg(
   target_names_expr=("split",),
@@ -41,12 +36,15 @@ def _build_collision_cfg(arm_geom_pattern: str) -> CollisionCfg:
   )
 
 
-def with_robotiq(robot: RobotCfg) -> RobotCfg:
+def with_gripper(robot: RobotCfg) -> RobotCfg:
+  """Attach the robot's configured gripper at its tool-attach frame.
+  """
+  gripper_xml = str(robot.gripper_xml)
   original_spec_fn = robot.entity_cfg.spec_fn
 
   def new_spec_fn() -> mujoco.MjSpec:
     spec = original_spec_fn()
-    gripper_spec = mujoco.MjSpec.from_file(str(_ROBOTIQ_XML))
+    gripper_spec = mujoco.MjSpec.from_file(gripper_xml)
     link = spec.body(robot.tool_attach_link)
     frame = link.add_frame(pos=robot.tool_attach_pos, quat=robot.tool_attach_quat)
     spec.attach(gripper_spec, prefix="gripper/", frame=frame)

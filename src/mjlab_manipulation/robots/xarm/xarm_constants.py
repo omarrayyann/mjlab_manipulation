@@ -9,7 +9,9 @@ from mjlab_manipulation.robots import RobotCfg
 
 _HERE = Path(__file__).parent
 XARM_XML: Path = _HERE / "xmls" / "xarm.xml"
+XARM_HAND_XML: Path = _HERE / "xmls" / "hand.xml"
 assert XARM_XML.exists()
+assert XARM_HAND_XML.exists()
 
 
 def get_spec() -> mujoco.MjSpec:
@@ -29,7 +31,7 @@ ARM_HOME = EntityCfg.InitialStateCfg(
     "joint_4": 0.7,
     "joint_5": 0.0,
     "joint_6": 1.0,
-    "joint_7": math.pi / 2,
+    "joint_7": 0.0,
   },
   joint_vel={".*": 0.0},
 )
@@ -54,4 +56,5 @@ def get_xarm_robot_cfg() -> RobotCfg:
     tool_attach_link="link_7",
     tool_attach_pos=(0.0, 0.0, 0.0),
     tool_attach_quat=(0.0, 0.0, 0.0, 1.0),
+    gripper_xml=XARM_HAND_XML,
   )

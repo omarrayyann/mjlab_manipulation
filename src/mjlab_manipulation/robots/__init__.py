@@ -1,9 +1,14 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from pathlib import Path
 
 from mjlab.entity import EntityCfg
 from mjlab.envs.mdp.actions import DifferentialIKActionCfg, TendonLengthActionCfg
+
+_DEFAULT_GRIPPER_XML: Path = (
+  Path(__file__).parent / "_robotiq" / "2f85" / "2f85.xml"
+)
 
 
 @dataclass
@@ -25,6 +30,7 @@ class RobotCfg:
   tool_attach_link: str = "link_7"
   tool_attach_pos: tuple[float, float, float] = (0.0, 0.0, 0.0)
   tool_attach_quat: tuple[float, float, float, float] = (1.0, 0.0, 0.0, 0.0)
+  gripper_xml: Path = field(default_factory=lambda: _DEFAULT_GRIPPER_XML)
 
   def arm_action_cfg(self) -> DifferentialIKActionCfg:
     return DifferentialIKActionCfg(
